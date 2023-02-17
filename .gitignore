@@ -1,0 +1,5 @@
+*.~lock.*
+/.idea/
+/.run/
+.env
+/dockerfiles/nginx/logs/

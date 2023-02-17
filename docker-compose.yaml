@@ -1,0 +1,79 @@
+##
+## Для локальной разработки
+##
+
+version: '3.5'
+
+services:
+  # nginx container as front controller
+  nginx:
+    container_name: ${PROJECT_NAME}-nginx
+    build:
+      context: dockerfiles/nginx
+      dockerfile: Dockerfile
+      args:
+        WORKDIR: ${WORKDIR}
+    restart: unless-stopped
+    volumes:
+      - ./basic:/var/www/:rw
+      - ./dockerfiles/nginx/logs:/var/log/nginx
+      - ./dockerfiles/nginx/sites-enabled:/etc/nginx/ext/sites-enabled/
+      - ./dockerfiles/nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - bridge-network
+
+  # main backend container
+  backend:
+    container_name: ${PROJECT_NAME}-backend
+    build:
+      context: .
+      dockerfile: ./dockerfiles/php-8.1/Dockerfile
+      args:
+        LOCAL_USER: ${LOCAL_USER}
+        WORKDIR: ${WORKDIR}
+        DEPLOY_ARG: ${DEPLOY_ENV}
+        OPCACHE_ENABLE: 0
+        XDEBUG_ENABLE: 1
+    environment:
+      APP_ENV: ${DEPLOY_ENV}
+      RABBIT_FEED_OFFER_QUEUE_DSN: ${RABBIT_FEED_OFFER_QUEUE_DSN}
+      OPCACHE_ENABLE: 0
+      PHP_OPCACHE_ENABLE: 0
+      PHP_OPCACHE_CLI_ENABLE: 0
+    volumes:
+      - ./basic:/var/www
+    tmpfs:
+      - '/var/www/.composer' # Чтобы кэш не писался на машину разработчика.
+    depends_on:
+      - mariadb
+    networks:
+      - bridge-network
+
+
+  mariadb:
+    container_name: ${PROJECT_NAME}-mysql
+    image: mariadb:10.3
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}
+    ports:
+      - "3306:3306"
+    networks:
+          - bridge-network
+
+volumes:
+  composer-cache:
+    name: ${PROJECT_NAME}-volume-composer-cache
+  mysql-data:
+    name: ${PROJECT_NAME}-mysql-data
+    external: true
+
+networks:
+  bridge-network:
+    name: ${PROJECT_NAME}-network
+    driver: bridge

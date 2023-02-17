@@ -1,31 +1,19 @@
-# study/travel-solutions
+# Тестовое Travel Solutions
 
+## Структура
+- /doc/ - документация
+- /dockerfiles/ - файлы контейнеров
+- /basic - Папка приложение YII2
+- /basic/web - public папка. В нее смотрит nginx
+- /.env - настройки окружения докер-сервиса
 
+### Сборка docker-сервиса
+- Сбилдить контейнеры `docker-compose build`
+- Создать volume `docker volume create ts-mysql-data`
+### Запуск docker-сервиса
+`docker-compose up -d`
 
-## Getting Started
-
-Download links:
-
-SSH clone URL: ssh://git@git.jetbrains.space/webpatron/study/travel-solutions.git
-
-HTTPS clone URL: https://git.jetbrains.space/webpatron/study/travel-solutions.git
-
-
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
-
-## Prerequisites
-
-What things you need to install the software and how to install them.
-
-```
-Examples
-```
-
-## Deployment
-
-Add additional notes about how to deploy this on a production system.
-
-## Resources
-
-Add links to external resources for this project, such as CI server, bug tracker, etc.
+### Сборка composer
+- Проваливаемся в контейнер backned `docker exec -it ts-backend bash`
+- Проваливаемся в папку /var/www `cd /var/www`
+- Ставим пакеты `composer install`
