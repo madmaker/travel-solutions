@@ -46,7 +46,7 @@ ENV DEPLOY_ENV=$DEPLOY_ARG\
 RUN docker-php-ext-install opcache
 RUN docker-php-ext-install soap
 RUN docker-php-ext-install mbstring
-RUN docker-php-ext-install pdo pdo_pgsql
+RUN docker-php-ext-install pdo pdo_mysql
 RUN docker-php-ext-configure gd --with-jpeg && docker-php-ext-install -j$(nproc) gd
 RUN docker-php-ext-install intl
 RUN docker-php-ext-install zip
@@ -78,7 +78,7 @@ COPY ./dockerfiles/php-8.1/conf.d/ /usr/local/etc/php/conf.d/
 RUN set -eux; \
     chmod -R a+rX /usr/local/etc/php
 
-COPY ./backend /var/www
+COPY ./basic /var/www
 WORKDIR /var/www
 RUN chown -R www-data /var/www
 

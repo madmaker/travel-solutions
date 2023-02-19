@@ -2,6 +2,8 @@
 
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
+$db_cbt = require __DIR__ . '/db_cbt.php';
+$db_guide_etalon = require __DIR__ . '/db_guide_etalon.php';
 
 $config = [
     'id' => 'basic-console',
@@ -10,7 +12,7 @@ $config = [
     'controllerNamespace' => 'app\commands',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
-        '@npm'   => '@vendor/npm-asset',
+        '@npm' => '@vendor/npm-asset',
         '@tests' => '@app/tests',
     ],
     'components' => [
@@ -26,6 +28,8 @@ $config = [
             ],
         ],
         'db' => $db,
+        'db_cbt' => $db_cbt,
+        'db_guide_etalon' => $db_guide_etalon,
     ],
     'params' => $params,
     /*
